@@ -1,6 +1,7 @@
 package com.example.user.downloader;
 
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -35,7 +36,6 @@ public class DownLoad extends AppCompatActivity {
         Texts = findViewById(R.id.texts);
         Starts = findViewById(R.id.starts);
         Views = findViewById(R.id.views);
-        Saved = findViewById(R.id.save);
         Clear = findViewById(R.id.clear);
 
 
@@ -66,16 +66,15 @@ public class DownLoad extends AppCompatActivity {
             public void onClick(View v) {
                 Texts.setText("");
                 Views.setImageDrawable(null);
-                Saved.setVisibility(View.INVISIBLE);
             }
         });
     }
 
-    @Override
-    protected void onDestroy() {
-        task.setListener(null);
-        super.onDestroy();
-    }
+//    @Override
+//    protected void onDestroy() {
+//        task.setListener(null);
+//        super.onDestroy();
+//    }
 
     private DownLoadAsyncTask.Listener createListener(){
         return new DownLoadAsyncTask.Listener() {
@@ -83,14 +82,30 @@ public class DownLoad extends AppCompatActivity {
             public void onSuccess(Bitmap bpm) {
                 Views.setImageBitmap(bpm);
                 if (bpm == null){
-                    Saved.setVisibility(View.INVISIBLE);
                     no.show();
                 }else{
-                    Saved.setVisibility(View.VISIBLE);
                     ok.show();
+                    setSaved();
                 }
                 Log.d("BPMの中身", String.valueOf(bpm));
             }
         };
+    }
+
+    //保存用のクラスに値渡し
+    private void setSaved(){
+        Bitmap bitmapImage = ((BitmapDrawable)Views.getDrawable()).getBitmap();
+        Material material = new Material(this);
+
+        try{
+            material.drectoryM(bitmapImage);
+            Toast.makeText(DownLoad.this,"保存できました",Toast.LENGTH_SHORT).show();
+
+        }catch (Error e){
+            Log.e("setSave", "Error:" + e);
+            Toast.makeText(DownLoad.this,"保存できません",Toast.LENGTH_SHORT).show();
+        }
+
+
     }
 }
