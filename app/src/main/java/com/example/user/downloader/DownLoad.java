@@ -1,6 +1,5 @@
 package com.example.user.downloader;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,13 +12,12 @@ import android.widget.Toast;
 
 public class DownLoad extends AppCompatActivity {
 
-    private Button Clear;
-    private EditText Texts;
-    private Button Starts;
-    private ImageView Views;
-    private Button Intents;
+    Button Clear;
+    Button Saved;
+    EditText Texts;
+    Button Starts;
+    ImageView Views;
     private DownLoadAsyncTask task;
-    private Intent intent;
 
     Toast no;
     Toast ok;
@@ -37,10 +35,8 @@ public class DownLoad extends AppCompatActivity {
         Texts = findViewById(R.id.texts);
         Starts = findViewById(R.id.starts);
         Views = findViewById(R.id.views);
+        Saved = findViewById(R.id.save);
         Clear = findViewById(R.id.clear);
-        Intents = findViewById(R.id.g_intent);
-
-        intent = new Intent(this, Search.class);
 
 
         //ダウンロード開始ボタンタップ時
@@ -57,6 +53,8 @@ public class DownLoad extends AppCompatActivity {
                     task.execute(url);
                 }else{
                     no.show();
+                    Saved.setVisibility(View.INVISIBLE);
+
                 }
             }
         });
@@ -68,19 +66,9 @@ public class DownLoad extends AppCompatActivity {
             public void onClick(View v) {
                 Texts.setText("");
                 Views.setImageDrawable(null);
+                Saved.setVisibility(View.INVISIBLE);
             }
         });
-
-
-        //画面遷移に呼び出される
-        Intents.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(intent);
-                onStop();
-            }
-        });
-
     }
 
     @Override
@@ -95,8 +83,10 @@ public class DownLoad extends AppCompatActivity {
             public void onSuccess(Bitmap bpm) {
                 Views.setImageBitmap(bpm);
                 if (bpm == null){
+                    Saved.setVisibility(View.INVISIBLE);
                     no.show();
                 }else{
+                    Saved.setVisibility(View.VISIBLE);
                     ok.show();
                 }
                 Log.d("BPMの中身", String.valueOf(bpm));
